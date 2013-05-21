@@ -43,11 +43,13 @@ import hudson.matrix.MatrixRun;
 import hudson.matrix.MatrixBuild;
 import hudson.matrix.MatrixProject;
 import hudson.model.AbstractBuild;
+import hudson.model.AbstractProject;
 import hudson.model.Action;
 import hudson.model.Cause;
 import hudson.model.CauseAction;
 import hudson.model.Hudson;
 import hudson.model.ParametersAction;
+import hudson.security.Permission;
 
 /**
  * The Matrix Reloaded Action class. This enables the plugin to add the link
@@ -95,6 +97,10 @@ public class MatrixReloadedAction implements Action {
 
     public String getChecked() {
         return this.checked;
+    }
+    
+    public Permission getPermission(){
+        return MatrixProject.BUILD;
     }
 
     public boolean combinationExists(AbstractBuild<?, ?> build, Combination c) {
@@ -190,6 +196,7 @@ public class MatrixReloadedAction implements Action {
      */
     public void doConfigSubmit(StaplerRequest req, StaplerResponse rsp) throws ServletException,
             IOException, InterruptedException {
+        Hudson.getInstance().checkPermission(getPermission());
         AbstractBuild<?, ?> mbuild = req.findAncestorObject(AbstractBuild.class);
 
         BuildType type;

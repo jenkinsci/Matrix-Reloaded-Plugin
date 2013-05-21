@@ -25,7 +25,7 @@
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define"
 	xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
-	<l:layout title="Rebuild" norefresh="true">
+	<l:layout title="Rebuild" norefresh="true" permission="${it.permission}" >
 		<l:side-panel>
 			<l:tasks>
 				<l:task icon="images/24x24/up.gif" href="${rootURL}/"
