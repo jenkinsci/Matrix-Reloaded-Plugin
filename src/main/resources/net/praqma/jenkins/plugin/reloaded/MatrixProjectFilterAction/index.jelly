@@ -1,0 +1,95 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define"
+	xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+	<l:layout title="Set combination filter" norefresh="true">
+	<st:include it="${it.getProject()}" page="sidepanel.jelly" />
+	<l:main-panel>			
+	<j:choose>
+		<j:when test="${it.getChecked()==null}">
+			<j:set var="o" value="${it.layouter}" />
+			<j:set var="defaultChecked" value="" />
+		</j:when>
+		<j:otherwise>
+			<j:set var="o" value="${it.layouter}" />
+			<j:set var="defaultChecked" value="${it.getChecked()}" />
+		</j:otherwise>
+	</j:choose>
+			<div id='matrix'>
+				<j:set var="changed" value="0" />
+				<f:form method="post" action="setFilter" name="matrixreloaded">
+					<j:set var="prefix" value="${it.getPrefix()}" />
+					<j:choose>
+						<!-- Optimized case when there's only one dimension to the axis (or 
+							zero dimension) -->
+						<j:when test="${empty(o.x) and empty(o.y)}">
+							<h2>${%Configurations}</h2>
+							<j:forEach var="p" items="${o.rows[0][0]}">
+								<!-- <d:invokeBody /> -->
+								<st:include page="main.jelly" />
+								<st:nbsp />
+								<j:if test="${!it.combinationExists(build, p.combination)}">
+									<j:set var="changed" value="1" />
+								</j:if>
+							</j:forEach>
+						</j:when>
+						<j:otherwise>
+							<h2>${%Configuration Matrix}</h2>
+							<table border="1" class="middle-align center-align">
+								<!-- X-axis -->
+								<j:forEach var="x" items="${o.x}" varStatus="loop">
+									<tr>
+										<!-- space for Y-axis -->
+										<j:if test="${!empty(o.y)}">
+											<td colspan="${size(o.y)}" />
+										</j:if>
+										<j:forEach begin="1" end="${o.repeatX(loop.index)}">
+											<j:forEach var="v" items="${x.values}">
+												<td colspan="${o.width(loop.index)}">${v}</td>
+											</j:forEach>
+										</j:forEach>
+									</tr>
+								</j:forEach>
+
+								<!-- Y-axis -->
+								<j:forEach var="r" items="${o.rows}">
+									<tr>
+										<j:forEach var="y" items="${o.y}" varStatus="loop">
+											<j:if test="${r.drawYHeader(loop.index)!=null}">
+												<td rowspan="${o.height(loop.index)}">${r.drawYHeader(loop.index)}</td>
+											</j:if>
+										</j:forEach>
+
+										<j:forEach var="c" items="${r}">
+											<td>
+												<j:choose>
+													<j:forEach var="p" items="${c}">
+														<div>
+															<!-- <d:invokeBody /> -->
+															<st:include page="main.jelly" />
+														</div>
+														<j:if test="${!it.combinationExists(build, p.combination)}">
+															<j:set var="changed" value="1" />
+														</j:if>
+													</j:forEach>
+												</j:choose>
+											</td>
+										</j:forEach>
+									</tr>
+								</j:forEach>
+							</table>
+						</j:otherwise>
+					</j:choose>
+					<input type="hidden" name="${it.getPrefix()}NUMBER" value="${build.number}" />
+					<br />
+					
+                                        <br/>
+                                        <br /><f:submit value="Set combination filter" />
+                                        
+                                        
+				</f:form>
+			</div>
+		</l:main-panel>
+	</l:layout>
+</j:jelly>
+
+
