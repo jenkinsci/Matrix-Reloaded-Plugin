@@ -33,7 +33,7 @@
 				height="24" width="24" />
 		</j:when>
 		<j:otherwise>
-			<a href="${p.nearestRunUrl}" class="model-link inside">
+			<a href="${request.getRootPath()}/${b.getUrl()}" class="model-link inside">
 				<img src="${imagesURL}/24x24/${b.buildStatusUrl}" tooltip="${p.tooltip} ${build.number!=b.number?(build.isBuilding()?'- pending' : '- skipped'):''}" alt="${p.tooltip}" style="${build.number!=b.number?'opacity:0.5':''}" height="24" width="24"/>
 				<j:if test="${empty(o.x) and empty(o.y)}">
 					${p.combination.toString(o.z)}
